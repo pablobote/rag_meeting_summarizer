@@ -6,7 +6,7 @@ Lightweight local Retrieval-Augmented Generation (RAG) project for meeting trans
 
 - Transcribes audio into text using Whisper.
 - Indexes PDF and TXT files into a local Chroma vector database.
-- Runs a local Q&A loop using an Ollama model.
+- Runs an automatic local meeting summary using an Ollama model.
 
 ## Project structure
 
@@ -15,7 +15,7 @@ local_rag_example/
 ├── data/                  # Source documents (.pdf, .txt)
 ├── src/
 │   ├── ingestion.py       # Audio transcription CLI
-│   └── rag.py             # Index + retrieval chat CLI
+│   └── rag.py             # Index + retrieval summary CLI
 ├── tests/                 # Starter tests
 ├── .gitignore
 ├── README.md
@@ -47,13 +47,19 @@ pip install -r requirements.txt
 python src/ingestion.py path\to\meeting.mp3 --model-size base --data-dir data
 ```
 
-## Run the RAG chat
+## Run the RAG summarizer
 
 ```powershell
 python src/rag.py --data-dir data --persist-dir chroma_db --llm-model mistral
 ```
+This command builds/updates embeddings and then generates a meeting summary automatically.
 
-Type `exit` to close the chat loop.
+By default, the command rebuilds the vector index from files in `data/` so stale embeddings do not affect results.
+If you intentionally want to reuse an existing index, add:
+
+```powershell
+python src/rag.py --data-dir data --persist-dir chroma_db --llm-model mistral --keep-existing-index
+```
 
 ## Development
 

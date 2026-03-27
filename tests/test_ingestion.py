@@ -19,7 +19,7 @@ class IngestionTests(unittest.TestCase):
             audio_file.write_bytes(b"fake-audio")
             output_dir = tmp_path / "data"
 
-            with patch("whisper.load_model", return_value=FakeWhisperModel()):
+            with patch("whisper.load_model", return_value=FakeWhisperModel()), patch("src.ingestion.shutil.which", return_value="ffmpeg"):
                 output_file = transcribe_to_data_folder(str(audio_file), model_size="base", data_dir=str(output_dir))
 
             self.assertTrue(output_file.exists())

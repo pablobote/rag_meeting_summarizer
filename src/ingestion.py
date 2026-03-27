@@ -1,4 +1,5 @@
 import argparse
+import shutil
 from pathlib import Path
 
 
@@ -16,6 +17,12 @@ def transcribe_to_data_folder(audio_path: str, model_size: str = "base", data_di
 
     print(f"Loading Whisper model: {model_size}")
     model = whisper.load_model(model_size)
+
+    if shutil.which("ffmpeg") is None:
+        raise RuntimeError(
+            "ffmpeg is required by Whisper but was not found on PATH. "
+            "Install it with `winget install Gyan.FFmpeg` and restart your terminal."
+        )
 
     print(f"Transcribing: {source}")
     result = model.transcribe(str(source), fp16=False)
